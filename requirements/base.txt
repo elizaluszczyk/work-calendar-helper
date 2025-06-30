@@ -1,4 +1,5 @@
 click
 ics
 pydantic
+pyfzf
 tomli
