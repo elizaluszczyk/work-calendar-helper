@@ -47,6 +47,30 @@ class ShiftType(BaseModel):
 
         return _validate_hour_minute(v)
 
+    @property
+    def end_hour_minute(self) -> int | None:
+        if self.end_hour is None:
+            return None
+        return int(self.end_hour.split(":")[1])
+
+    @property
+    def end_hour_hour(self) -> int | None:
+        if self.end_hour is None:
+            return None
+        return int(self.end_hour.split(":")[0])
+
+    @property
+    def start_hour_minute(self) -> int | None:
+        if self.start_hour is None:
+            return None
+        return int(self.start_hour.split(":")[1])
+
+    @property
+    def start_hour_hour(self) -> int | None:
+        if self.start_hour is None:
+            return None
+        return int(self.start_hour.split(":")[0])
+
 
 def _default_shit_types_factory() -> list[ShiftType]:
     return [ShiftType()]
@@ -65,6 +89,22 @@ class WorkCalConfig(BaseModel):
     @classmethod
     def validate_time(cls, v: str) -> str:
         return _validate_hour_minute(v)
+
+    @property
+    def default_start_hour_minute(self) -> int:
+        return int(self.default_start_hour.split(":")[1])
+
+    @property
+    def default_start_hour_hour(self) -> int:
+        return int(self.default_start_hour.split(":")[0])
+
+    @property
+    def default_end_hour_minute(self) -> int:
+        return int(self.default_end_hour.split(":")[1])
+
+    @property
+    def default_end_hour_hour(self) -> int:
+        return int(self.default_end_hour.split(":")[0])
 
 
 def load_config() -> WorkCalConfig:
