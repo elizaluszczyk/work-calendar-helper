@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import typing
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from textual.containers import Horizontal, Vertical
@@ -17,6 +18,110 @@ from work_cal.tui.state import PlannerState, Shift
 
 if TYPE_CHECKING:
     from textual.app import ComposeResult
+
+
+class ShiftParameterError(ValueError):
+    def __init__(self, msg: str) -> None:
+        self.cause_msg = msg
+        super().__init__(msg)
+
+
+@dataclass
+class ShiftBuilder:
+
+    """Validate Shift Data before building.
+
+    After each setter call the relevant internal data is validated. After an error is
+    thrown the whole objcet is no longer valid and therefore cannot be used
+    """
+
+    name: str | None = None
+    start_hour: int | None = None
+    start_minute: int | None = None
+    end_hour: int | None = None
+    end_minute: int | None = None
+    from_template: str | None = None
+
+    @staticmethod
+    def _validate_hour(hour: int) -> None:
+        if hour < 0 or hour > 23:  # noqa: PLR2004
+            msg = "Hours must be between 0 and 23"
+            raise ShiftParameterError(msg)
+
+    @staticmethod
+    def _validate_minute(minute: int) -> None:
+        if minute < 0 or minute > 59:  # noqa: PLR2004
+            msg = "Minutes must be between 0 and 23"
+            raise ShiftParameterError(msg)
+
+    def _validate_timeline(self) -> None:
+        if self.end_hour is None or self.start_hour is None:
+            return
+
+        msg = "End hour must come after start hour"
+
+        if self.end_hour < self.start_hour:
+            raise ShiftParameterError(msg)
+
+        if self.end_hour > self.start_hour:
+            return
+
+        # hours are equal
+
+        if self.end_minute is None or self.start_minute is None:
+            return
+
+        if self.end_minute < self.start_minute:
+            raise ShiftParameterError(msg)
+
+    def set_name(self, name: str) -> ShiftBuilder:
+        if len(name) == 0:
+            msg = "Name is required"
+            raise ShiftParameterError(msg)
+
+        self.name = name
+        return self
+
+    def set_start_hour(self, hour: int) -> ShiftBuilder:
+        self._validate_hour(hour)
+        self.start_hour = hour
+        self._validate_timeline()
+        return self
+
+    def set_end_hour(self, hour: int) -> ShiftBuilder:
+        self._validate_hour(hour)
+        self.end_hour = hour
+        self._validate_timeline()
+        return self
+
+    def set_start_minute(self, minute: int) -> ShiftBuilder:
+        self._validate_minute(minute)
+        self.start_minute = minute
+        self._validate_timeline()
+        return self
+
+    def set_end_minute(self, minute: int) -> ShiftBuilder:
+        self._validate_minute(minute)
+        self.end_minute = minute
+        self._validate_timeline()
+        return self
+
+    def set_from_template(self, from_template: str) -> ShiftBuilder:
+        self.from_template = from_template
+        return self
+
+    def build(self) -> Shift:
+        for field in (self.name, self.start_hour, self.start_minute, self.end_hour, self.end_minute):
+            if field is not None:
+                continue
+
+            raise ValueError
+
+        return Shift(
+            name=self.name, start_hour=self.start_hour, start_minute=self.start_minute,  # pyrefly: ignore
+            end_hour=self.end_hour, end_minute=self.end_minute,  # pyrefly: ignore
+            from_template=self.from_template,
+        )
 
 
 class DayEditor(Static):
