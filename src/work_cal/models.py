@@ -1,8 +1,7 @@
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 
-@dataclass
-class Shift:
+class Shift(BaseModel):
     name: str
     start_hour: int
     start_minute: int
