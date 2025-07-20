@@ -48,6 +48,10 @@ class ShiftPlannerApp(App):
     Select {
         margin: 0 0 1 0;
     }
+
+    .highlighted {
+        background: yellow;
+    }
     """
 
     def __init__(self, dates: list[date]) -> None:
