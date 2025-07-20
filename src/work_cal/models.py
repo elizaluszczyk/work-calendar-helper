@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from datetime import date
+
+from pydantic import BaseModel, Field
 
 
 class Shift(BaseModel):
@@ -8,3 +10,7 @@ class Shift(BaseModel):
     end_hour: int
     end_minute: int
     from_template: str | None
+
+
+class ShiftStateDump(BaseModel):
+    shift_map: dict[date, Shift] = Field(default_factory=dict)

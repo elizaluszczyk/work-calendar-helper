@@ -2,8 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from work_cal.base import DEFAULT_MONTH_DUMP_LOCATION
+from work_cal.models import ShiftStateDump
+
 if TYPE_CHECKING:
+    from collections.abc import Iterable
     from datetime import date
+    from pathlib import Path
 
     from work_cal.config import WorkCalConfig, ShiftType
     from work_cal.models import Shift
@@ -17,7 +22,13 @@ class DayState:  # noqa: B903
 
 class PlannerState:
 
-    def __init__(self, config: WorkCalConfig, dates: list[date]) -> None:
+    def __init__(self, config: WorkCalConfig, dates: list[date], dump_location: Path | None = None) -> None:
+
+        if dump_location is None:
+            dump_location = DEFAULT_MONTH_DUMP_LOCATION
+        self.dump_location: Path = dump_location
+        self.dump_location.mkdir(exist_ok=True)
+
         self.templates = config.shift_types
         self.dates = dates
         self.date_to_shift: dict[date, DayState] = {dt: DayState(None, None) for dt in self.dates}
@@ -35,3 +46,35 @@ class PlannerState:
                 return template
 
         return None
+
+    @staticmethod
+    def _determine_dump_filename(dates: Iterable[date]) -> str:
+        year_to_month_map: dict[int, set[int]] = {}
+        for date in dates:
+            if date.year not in year_to_month_map:
+                year_to_month_map[date.year] = set()
+
+            year_to_month_map[date.year].add(date.month)
+
+        filename: str = "shift_dump_"
+
+        for year, months in year_to_month_map.items():
+            months_str = "_".join(str(month).rjust(2, "0") for month in sorted(months))
+            filename += f"{year}_{months_str}_"
+
+        return filename.strip("_") + ".json"
+
+    def dump_shift_state(self, filename: str | None = None) -> None:
+        if filename is None:
+            filename = self._determine_dump_filename(self.date_to_shift)
+
+        date_to_shift: dict[date, Shift] = {}
+        for day, day_state in self.date_to_shift.items():
+            if day_state.shift is None:
+                continue
+
+            date_to_shift[day] = day_state.shift
+
+        json_data = ShiftStateDump(shift_map=date_to_shift).model_dump_json()
+
+        (self.dump_location / filename).write_text(json_data, encoding="utf-8")

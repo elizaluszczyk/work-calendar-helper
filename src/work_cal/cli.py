@@ -20,6 +20,7 @@ def main(month: int, year: int) -> None:
     app.title = "Shift Planner"
     app.sub_title = "Shift Planner"
     app.run()
+    app.planner_state.dump_shift_state()
 
 
 if __name__ == "__main__":
