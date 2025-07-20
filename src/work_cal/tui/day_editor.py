@@ -144,7 +144,6 @@ class DayEditor(Static):
 
     def compose(self) -> ComposeResult:  # noqa: PLR6301
         with Vertical():
-            yield Static("Day Editor", classes="editor-title")
             yield Static("No day selected", id="selected-date")
 
             yield Select(

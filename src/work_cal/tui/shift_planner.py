@@ -7,7 +7,6 @@ from textual.containers import Horizontal, Vertical
 from textual.widgets import (
     Footer,
     ListView,
-    Static,
 )
 
 from work_cal.config import get_config
@@ -38,22 +37,6 @@ class ShiftPlannerApp(App):
         margin: 1;
     }
 
-    .editor-title {
-        text-align: center;
-        text-style: bold;
-        background: $primary;
-        color: $text;
-        padding: 1;
-    }
-
-    .list-title {
-        text-align: center;
-        text-style: bold;
-        background: $secondary;
-        color: $text;
-        padding: 1;
-    }
-
     Input {
         margin: 0 0 1 0;
     }
@@ -78,7 +61,6 @@ class ShiftPlannerApp(App):
                 yield DayEditor()
 
             with Vertical(classes="right-panel"):
-                yield Static("Days", classes="list-title")
                 yield DayList()
 
         yield Footer()
