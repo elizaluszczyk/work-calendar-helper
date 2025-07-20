@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import typing
 from typing import TYPE_CHECKING
 
 from textual.containers import Horizontal, Vertical
@@ -104,6 +105,30 @@ class DayEditor(Static):
 
     def _update_input(self, input_selector: str, value: str) -> None:
         self.query_one(input_selector, Input).value = value
+
+    def _read_input[ParsedType](
+        self,
+        input_selector: str,
+        factory: typing.Callable[[str], ParsedType],
+    ) -> ParsedType | None:
+        value = self.query_one(input_selector, Input).value
+        if value is None:
+            return None
+
+        return factory(value)
+
+    def _read_input_with_default[ParsedType](
+        self,
+        input_selector: str,
+        factory: typing.Callable[[str], ParsedType],
+        default: ParsedType,
+    ) -> ParsedType:
+        input_value_res = self._read_input(input_selector, factory)
+
+        if input_value_res is not None:
+            return input_value_res
+
+        return default
 
     def on_select_changed(self, event: Select.Changed) -> None:
         if event.control.id != "template-select":
