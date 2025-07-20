@@ -88,7 +88,7 @@ class DayList(ListView):
         self.planner_state.get_day_state(selected_for_pasting_into_date).shift = shift
 
         self.refresh_item(selected_for_pasting_into_date)
-        self.app.notify("Shift copied")
+        self.app.notify("Shift pasted")
 
     def on_yank_key_pressed(self) -> None:
         current_item = self.highlighted_child
