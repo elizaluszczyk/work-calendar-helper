@@ -7,9 +7,6 @@ from pydantic import BaseModel, Field, field_validator
 
 from work_cal.base import (
     CONFIG_PATH,
-    DEFAULT_SHIFT_DURATION,
-    DEFAULT_SHIFT_END_HOUR,
-    DEFAULT_SHIT_START_HOUR,
     DEFAULT_WORKER_NAME,
 )
 
@@ -79,32 +76,8 @@ def _default_shit_types_factory() -> list[ShiftType]:
 class WorkCalConfig(BaseModel):
     model_config = {"arbitrary_types_allowed": True}
     worker_name: str = DEFAULT_WORKER_NAME
-    default_start_hour: str = DEFAULT_SHIT_START_HOUR
-    default_end_hour: str = DEFAULT_SHIFT_END_HOUR
-    default_duration_hours: int = DEFAULT_SHIFT_DURATION
 
     shift_types: list[ShiftType] = Field(default_factory=_default_shit_types_factory)
-
-    @field_validator("default_start_hour", "default_end_hour")  # pyrefly: ignore
-    @classmethod
-    def validate_time(cls, v: str) -> str:
-        return _validate_hour_minute(v)
-
-    @property
-    def default_start_hour_minute(self) -> int:
-        return int(self.default_start_hour.split(":")[1])
-
-    @property
-    def default_start_hour_hour(self) -> int:
-        return int(self.default_start_hour.split(":")[0])
-
-    @property
-    def default_end_hour_minute(self) -> int:
-        return int(self.default_end_hour.split(":")[1])
-
-    @property
-    def default_end_hour_hour(self) -> int:
-        return int(self.default_end_hour.split(":")[0])
 
 
 def load_config() -> WorkCalConfig:
