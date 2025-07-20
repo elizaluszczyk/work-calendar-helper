@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 import tomllib
+from typing import Self
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -86,3 +87,31 @@ def load_config() -> WorkCalConfig:
     toml_data = tomllib.loads(config_path.read_text("utf-8")) if config_path.exists() else {}
 
     return WorkCalConfig(**toml_data)
+
+
+class ConfigSingleton:
+    _config: WorkCalConfig | None = None
+
+    def __new__(cls) -> Self:
+        if not hasattr(cls, "instance"):
+            cls.instance = super().__new__(cls)
+        return cls.instance
+
+    def get_config(self) -> WorkCalConfig:
+        if self._config is None:
+            self._config = load_config()
+        return self._config
+
+    def reload_config(self) -> WorkCalConfig:
+        self._config = load_config()
+        return self._config
+
+    @classmethod
+    def reset(cls) -> None:
+        if hasattr(cls, "instance"):
+            delattr(cls, "instance")
+        cls._config = None
+
+
+def get_config() -> WorkCalConfig:
+    return ConfigSingleton().get_config()

@@ -10,7 +10,7 @@ from textual.widgets import (
     Static,
 )
 
-from work_cal.config import load_config
+from work_cal.config import get_config
 from work_cal.tui.day_editor import DayEditor
 from work_cal.tui.day_list import DayList, DayListItem
 from work_cal.tui.state import PlannerState
@@ -68,7 +68,7 @@ class ShiftPlannerApp(App):
 
     def __init__(self, dates: list[date]) -> None:
         super().__init__()
-        self.config = load_config()
+        self.config = get_config()
         self.planner_state = PlannerState(self.config, dates)
 
     def compose(self) -> ComposeResult:  # noqa: PLR6301
