@@ -14,6 +14,7 @@ from work_cal.config import get_config
 from work_cal.tui.day_editor import DayEditor
 from work_cal.tui.day_list import DayList, DayListItem
 from work_cal.tui.state import PlannerState
+from work_cal.tui.themes import themes
 
 if TYPE_CHECKING:
     from datetime import date
@@ -88,6 +89,11 @@ class ShiftPlannerApp(App):
 
         day_editor.set_planner_state(self.planner_state)
         day_list.set_planner_state(self.planner_state)
+
+        for theme in themes:
+            self.register_theme(theme)
+
+        self.theme = "ayu_dark"
 
     def on_list_view_selected(self, event: ListView.Selected) -> None:
         if isinstance(event.item, DayListItem):
