@@ -2,13 +2,14 @@ from datetime import date, datetime, time
 
 from ics import Calendar, Event
 
-from work_cal.base import DEFAULT_TIME_ZONE
 from work_cal.calendar.event import create_calendar_event
+from work_cal.config import get_config
 from work_cal.models import Shift, ShiftStateDump
 
 
 def _date_to_datetime(day: date, hour: int, minute: int) -> datetime:
-    return datetime.combine(day, time(hour, minute, 0, 0, tzinfo=DEFAULT_TIME_ZONE))
+    tzinfo = get_config().timezone
+    return datetime.combine(day, time(hour, minute, 0, 0, tzinfo=tzinfo))
 
 
 def shift_to_event(day: date, shift: Shift) -> Event:
