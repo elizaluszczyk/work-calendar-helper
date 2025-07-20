@@ -265,45 +265,41 @@ class DayEditor(Static):
         elif event.button.id == "clear-shift":
             self._clear_shift()
 
+    @staticmethod
+    def _str_to_int(string: str) -> int:
+        """Exists only to please facebook goods and pyrefly."""  # noqa: DOC201
+        return int(string)
+
     def _save_shift(self) -> None:
-        """Save the current shift data."""
         try:
             name = self.query_one("#shift-name", Input).value.strip()
-            start_hour = int(self.query_one("#start-hour", Input).value or "0")
-            start_minute = int(self.query_one("#start-minute", Input).value or "0")
-            end_hour = int(self.query_one("#end-hour", Input).value or "0")
-            end_minute = int(self.query_one("#end-minute", Input).value or "0")
-
-            current_day_state = self.planner_state.get_current_day_state()
-
-            if not name:
-                self.notify("Shift name is required", severity="warning")
-                return
-
-            if not (0 <= start_hour <= 23 and 0 <= end_hour <= 23):  # noqa: PLR2004
-                self.notify("Hours must be between 0 and 23", severity="error")
-                return
-
-            if not (0 <= start_minute <= 59 and 0 <= end_minute <= 59):  # noqa: PLR2004
-                self.notify("Minutes must be between 0 and 59", severity="error")
-                return
-
-            shift = Shift(
-                name=name,
-                start_hour=start_hour,
-                start_minute=start_minute,
-                end_hour=end_hour,
-                end_minute=end_minute,
-                from_template=current_day_state.selected_template,
-            )
-
-            current_day_state.shift = shift
-            self.notify(f"Shift saved: {shift.name}", severity="information")
-
-            self.post_message(self.ShiftUpdated())
-
+            start_hour = self._read_input_with_default("#start-hour", self._str_to_int, 0)
+            start_minute = self._read_input_with_default("#start-minute", self._str_to_int, 0)
+            end_hour = self._read_input_with_default("#end-hour", self._str_to_int, 0)
+            end_minute = self._read_input_with_default("#end-minute", self._str_to_int, 0)
         except ValueError:
             self.notify("Invalid time values entered", severity="error")
+            return
+
+        current_day_state = self.planner_state.get_current_day_state()
+
+        builder = ShiftBuilder()
+        try:
+            builder \
+                .set_name(name) \
+                .set_start_hour(start_hour) \
+                .set_start_minute(start_minute) \
+                .set_end_hour(end_hour) \
+                .set_end_minute(end_minute)
+        except ShiftParameterError as e:
+            self.notify(e.cause_msg, severity="warning")
+            return
+
+        shift = builder.build()
+        current_day_state.shift = shift
+        self.notify(f"Shift saved: {shift.name}", severity="information")
+
+        self.post_message(self.ShiftUpdated())
 
     def _clear_shift(self) -> None:
         day_state = self.planner_state.get_current_day_state()
