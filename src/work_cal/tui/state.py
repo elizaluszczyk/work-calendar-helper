@@ -34,6 +34,27 @@ class PlannerState:
         self.date_to_shift: dict[date, DayState] = {dt: DayState(None, None) for dt in self.dates}
         self.current_day = dates[0]
 
+    def attempt_shift_dump_load(self, filename: str | None = None) -> None:
+        if filename is None:
+            filename = self._determine_dump_filename(self.date_to_shift)
+
+        dump_path = self.dump_location / filename
+
+        if not dump_path.exists() or not dump_path.is_file():
+            return
+
+        json_data = dump_path.read_text(encoding="utf-8")
+
+        dump_data: ShiftStateDump = ShiftStateDump.model_validate_json(json_data)
+
+        for date in dump_data.shift_map:
+            if date not in self.date_to_shift:
+                return  # if some date from dump is not in date range we skip the whole dump
+
+        for date, shift in dump_data.shift_map.items():
+            self.date_to_shift[date].shift = shift
+            self.date_to_shift[date].selected_template = shift.from_template
+
     def get_day_state(self, day: date) -> DayState:
         return self.date_to_shift[day]
 

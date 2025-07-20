@@ -17,6 +17,7 @@ def get_dates_for_month(year: int, month: int) -> list[date]:
 def main(month: int, year: int) -> None:
     dates = get_dates_for_month(year, month)
     app = ShiftPlannerApp(dates)
+    app.planner_state.attempt_shift_dump_load()
     app.title = "Shift Planner"
     app.sub_title = "Shift Planner"
     app.run()
