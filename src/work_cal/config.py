@@ -6,7 +6,8 @@ import tomllib
 from pydantic import BaseModel, Field, field_validator
 
 from work_cal.base import (
-    CONFIG_PATH,
+    DEFAULT_CONFIG_DIR,
+    DEFAULT_CONFIG_FILENAME,
     DEFAULT_WORKER_NAME,
 )
 
@@ -81,6 +82,7 @@ class WorkCalConfig(BaseModel):
 
 
 def load_config() -> WorkCalConfig:
-    toml_data = tomllib.loads(CONFIG_PATH.read_text("utf-8")) if CONFIG_PATH.exists() else {}
+    config_path = DEFAULT_CONFIG_DIR / DEFAULT_CONFIG_FILENAME
+    toml_data = tomllib.loads(config_path.read_text("utf-8")) if config_path.exists() else {}
 
     return WorkCalConfig(**toml_data)
