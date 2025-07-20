@@ -168,7 +168,7 @@ class DayEditor(Static):
             )
 
             current_day_state.shift = shift
-            self.notify(f"Shift saved: {shift}", severity="information")
+            self.notify(f"Shift saved: {shift.name}", severity="information")
 
             self.post_message(self.ShiftUpdated())
 
