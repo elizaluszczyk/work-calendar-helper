@@ -5,8 +5,9 @@ from pathlib import Path
 import click
 from pyfzf.pyfzf import FzfPrompt
 
-from work_cal.base import DEFAULT_FZF_OPTS, DEFAULT_MONTH_DUMP_LOCATION
+from work_cal.base import DEFAULT_MONTH_DUMP_LOCATION
 from work_cal.calendar.shift_parsing import shift_state_dump_to_calendar
+from work_cal.config import get_config
 from work_cal.models import ShiftStateDump
 from work_cal.tui.shift_planner import ShiftPlannerApp
 
@@ -46,7 +47,7 @@ def dump(filename: str) -> None:
 
     fzf = FzfPrompt()
 
-    selected_dump_file_list: list[str] = fzf.prompt(available_dump_files, fzf_options=DEFAULT_FZF_OPTS)
+    selected_dump_file_list: list[str] = fzf.prompt(available_dump_files, fzf_options=get_config().fzf_options)
 
     if len(selected_dump_file_list) != 1:
         return

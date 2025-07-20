@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field, field_validator
 from work_cal.base import (
     DEFAULT_CONFIG_DIR,
     DEFAULT_CONFIG_FILENAME,
+    DEFAULT_FZF_OPTS,
     DEFAULT_TIME_ZONE,
     DEFAULT_WORKER_NAME,
 )
@@ -83,6 +84,7 @@ class WorkCalConfig(BaseModel):
 
     shift_types: list[ShiftType] = Field(default_factory=_default_shit_types_factory)
     timezone: ZoneInfo = Field(default=DEFAULT_TIME_ZONE)
+    fzf_options: str = Field(default=DEFAULT_FZF_OPTS)
 
 
 def load_config() -> WorkCalConfig:
