@@ -8,3 +8,4 @@ DEFAULT_SHIFT_END_HOUR: str = "21:00"
 DEFAULT_SHIFT_DURATION: int = 10
 DEFAULT_WORKER_NAME: str = "Worker"
 DEFAULT_TIME_ZONE: ZoneInfo = ZoneInfo("Europe/Warsaw")
+DEFAULT_FZF_OPTS: str = "--height=~40%"
