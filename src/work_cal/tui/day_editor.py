@@ -13,11 +13,13 @@ from textual.widgets import (
     Static,
 )
 
+from work_cal.models import Shift
 from work_cal.tui.errors import PlannerStateNotSetError
-from work_cal.tui.state import PlannerState, Shift
 
 if TYPE_CHECKING:
     from textual.app import ComposeResult
+
+    from work_cal.tui.state import PlannerState
 
 
 class ShiftParameterError(ValueError):

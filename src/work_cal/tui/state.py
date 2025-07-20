@@ -1,22 +1,12 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from datetime import date
 
     from work_cal.config import WorkCalConfig, ShiftType
-
-
-@dataclass
-class Shift:
-    name: str
-    start_hour: int
-    start_minute: int
-    end_hour: int
-    end_minute: int
-    from_template: str | None
+    from work_cal.models import Shift
 
 
 class DayState:  # noqa: B903
