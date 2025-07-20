@@ -11,10 +11,15 @@ def get_dates_for_month(year: int, month: int) -> list[date]:
     return [date(year, month, day) for day in range(1, days_in_month + 1)]
 
 
-@click.command()
+@click.group()
+def main() -> None:
+    pass
+
+
+@main.command()
 @click.argument("month", type=click.IntRange(1, 12))
 @click.option("--year", "-y", type=int, default=datetime.now().year, help="Year (default: current year)")  # noqa: DTZ005
-def main(month: int, year: int) -> None:
+def planner(month: int, year: int) -> None:
     dates = get_dates_for_month(year, month)
     app = ShiftPlannerApp(dates)
     app.planner_state.attempt_shift_dump_load()
