@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 import tomllib
+from pathlib import Path  # noqa: TC003 without this pydantic crashes
 from typing import Self
 from zoneinfo import ZoneInfo  # noqa: TC003 without this pydantic crashes
 
@@ -11,6 +12,7 @@ from work_cal.base import (
     DEFAULT_CONFIG_DIR,
     DEFAULT_CONFIG_FILENAME,
     DEFAULT_FZF_OPTS,
+    DEFAULT_MONTH_DUMP_LOCATION,
     DEFAULT_TIME_ZONE,
     DEFAULT_WORKER_NAME,
 )
@@ -85,6 +87,7 @@ class WorkCalConfig(BaseModel):
     shift_types: list[ShiftType] = Field(default_factory=_default_shit_types_factory)
     timezone: ZoneInfo = Field(default=DEFAULT_TIME_ZONE)
     fzf_options: str = Field(default=DEFAULT_FZF_OPTS)
+    month_dump_location: Path = Field(default=DEFAULT_MONTH_DUMP_LOCATION)
 
 
 def load_config() -> WorkCalConfig:

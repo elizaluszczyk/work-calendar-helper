@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from work_cal.base import DEFAULT_MONTH_DUMP_LOCATION
+from work_cal.config import get_config
 from work_cal.models import ShiftStateDump
 
 if TYPE_CHECKING:
@@ -25,7 +25,7 @@ class PlannerState:
     def __init__(self, config: WorkCalConfig, dates: list[date], dump_location: Path | None = None) -> None:
 
         if dump_location is None:
-            dump_location = DEFAULT_MONTH_DUMP_LOCATION
+            dump_location = get_config().month_dump_location
         self.dump_location: Path = dump_location
         self.dump_location.mkdir(exist_ok=True)
 

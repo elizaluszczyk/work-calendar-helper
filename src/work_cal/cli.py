@@ -5,7 +5,6 @@ from pathlib import Path
 import click
 from pyfzf.pyfzf import FzfPrompt
 
-from work_cal.base import DEFAULT_MONTH_DUMP_LOCATION
 from work_cal.calendar.shift_parsing import shift_state_dump_to_calendar
 from work_cal.config import get_config
 from work_cal.models import ShiftStateDump
@@ -39,7 +38,7 @@ def planner(month: int, year: int) -> None:
 @click.argument("filename", type=str)
 def dump(filename: str) -> None:
     available_dump_files: list[Path] = []
-    for path in DEFAULT_MONTH_DUMP_LOCATION.iterdir():
+    for path in get_config().month_dump_location.iterdir():
         if not path.is_file():
             continue
 
