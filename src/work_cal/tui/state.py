@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from datetime import date
     from pathlib import Path
 
-    from work_cal.config import WorkCalConfig, ShiftType
+    from work_cal.config import ShiftType, WorkCalConfig
     from work_cal.models import Shift
 
 
