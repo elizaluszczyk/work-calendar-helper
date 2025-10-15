@@ -6,12 +6,10 @@ build-backend = "setuptools.build_meta"
 name = "work_cal"
 version = "0.0.1"
 description = "A python tool that helps workers with managing their shifts in their google calendar"
-authors = [
-    {name = "Eliza Łuszczyk", email = "eliza.luszczyk@gmail.com"}
-]
+authors = [{ name = "Eliza Łuszczyk", email = "eliza.luszczyk@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.12"
-license = {text = "MIT"}
+license = { text = "MIT" }
 dynamic = ["dependencies"]
 
 
@@ -20,7 +18,7 @@ work_cal = "work_cal.cli:main"
 
 
 [tool.setuptools]
-package-dir = {"" = "src"}
+package-dir = { "" = "src" }
 include-package-data = true
 
 [tool.setuptools.dynamic]
@@ -28,21 +26,21 @@ dependencies = { file = "requirements/base.txt" }
 
 [tool.ruff]
 lint.select = ["ALL", "E302"]
-line-length=120
+line-length = 120
 lint.ignore = [
-    "D100",
-    "D101",
-    "D102",
-    "D103",
-    "D104",
-    "D105",
-    "D107",
-    "N818",
-    "D213",
-    "D211",
-    "S311",
-    "FIX002",
-    "TD003",
-    "CPY001",
+  "D100",
+  "D101",
+  "D102",
+  "D103",
+  "D104",
+  "D105",
+  "D107",
+  "N818",
+  "D213",
+  "D211",
+  "S311",
+  "FIX002",
+  "TD003",
+  "CPY001",
 ]
 preview = true
